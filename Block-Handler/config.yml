@@ -1,0 +1,6 @@
+
+# Changing this does
+# Nothing at all :P
+chathandler:
+  enabled: false
+  sentmessage: false
