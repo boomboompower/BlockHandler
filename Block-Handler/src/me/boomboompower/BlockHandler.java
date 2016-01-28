@@ -3,7 +3,6 @@ package me.boomboompower;
 import java.io.File;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -12,10 +11,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@SuppressWarnings("deprecation")
 public class BlockHandler extends JavaPlugin implements Listener {
 	
 	@Override  
@@ -63,6 +61,13 @@ public class BlockHandler extends JavaPlugin implements Listener {
 	}
 	   
 	public static void blockTest(Player player, String permission, Block block, Material material, Event event, Boolean cancelled) {
-		if(!(player.hasPermission(permission)) && block.getType() == material) event.setCancelled(cancelled);
+		if(!(player.hasPermission(permission)) && block.getType() == material) {
+			if (event instanceof BlockPlaceEvent)((BlockBreakEvent) event).setCancelled(cancelled);
+		} else if (event instanceof BlockBreakEvent) {
+			((BlockPlaceEvent) event).setCancelled(cancelled);
+		} else if (!(event instanceof BlockPlaceEvent) || !(event instanceof BlockBreakEvent)) {
+			Plugin p = Bukkit.getPluginManager().getPlugin("BlockHandler");
+			Bukkit.getPluginManager().disablePlugin(p);
+		}
 	}
 }
