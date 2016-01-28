@@ -52,18 +52,18 @@ public class BlockHandler extends JavaPlugin implements Listener {
 		}  
 	}
 	   
-	public void blockTest(Player player, String permission, Event event, Boolean cancelled) {	
-		if (event instanceof BlockPlaceEvent) {
-			for (Short id : getConfig().getShortList("breaking.blacklistedblocks")) {
-				if(!(player.hasPermission(permission + Material.getMaterial(id)))) {
+	public void blockTest(Player player, String permission, Event event, Boolean cancelled) {
+		if (event instanceof BlockBreakEvent) {
+			for (Short id : getConfig().getShortList("placing.blacklistedblocks")) {
+				if(!(player.hasPermission(permission))) {
 					if (((BlockBreakEvent) event).getBlock().getType() == Material.getMaterial(id)) {
 						((BlockBreakEvent) event).setCancelled(cancelled);
 					}
 				}
 			}	
-		} else if (event instanceof BlockBreakEvent) {
-			for (Short id : getConfig().getShortList("placing.blacklistedblocks")) {
-				if(!(player.hasPermission(permission))) {
+		} else if (event instanceof BlockPlaceEvent) {
+			for (Short id : getConfig().getShortList("breaking.blacklistedblocks")) {
+				if(!(player.hasPermission(permission + Material.getMaterial(id)))) {
 					if (((BlockPlaceEvent) event).getBlock().getType() == Material.getMaterial(id)) {
 						((BlockPlaceEvent) event).setCancelled(cancelled);
 					}
