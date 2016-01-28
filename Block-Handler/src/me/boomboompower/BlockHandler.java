@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -14,6 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@SuppressWarnings("deprecation")
 public class BlockHandler extends JavaPlugin implements Listener {
 	
 	@Override  
@@ -27,21 +27,13 @@ public class BlockHandler extends JavaPlugin implements Listener {
 	@EventHandler  
 	public void blockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
-	    Block b = e.getBlock();
-	    blockTest(p, "break.stone", b, Material.STONE, e, true);
-	    blockTest(p, "break.dirt", b, Material.DIRT, e, true);
-	    blockTest(p, "break.grass", b, Material.GRASS, e, true);
-	    blockTest(p, "break.bedrock", b, Material.BEDROCK, e, true);  
+	    blockTest(p, "break.", e, true); 
 	}
 	   
 	@EventHandler 
 	public void blockPlace(BlockPlaceEvent e) {
 	      Player p = e.getPlayer();
-	      Block b = e.getBlock();
-	      blockTest(p, "place.stone", b, Material.STONE, e, true);
-	      blockTest(p, "place.dirt", b, Material.DIRT, e, true);
-	      blockTest(p, "place.grass", b, Material.GRASS, e, true);
-	      blockTest(p, "place.bedrock", b, Material.BEDROCK, e, true);  
+	      blockTest(p, "place.", e, true); 
 	}
 	  
 	public void saveREADME() {
@@ -60,13 +52,25 @@ public class BlockHandler extends JavaPlugin implements Listener {
 		}  
 	}
 	   
-	public static void blockTest(Player player, String permission, Block block, Material material, Event event, Boolean cancelled) {
-		if(!(player.hasPermission(permission)) && block.getType() == material) {
-			if (event instanceof BlockPlaceEvent)((BlockBreakEvent) event).setCancelled(cancelled);
+	public void blockTest(Player player, String permission, Event event, Boolean cancelled) {	
+		if (event instanceof BlockPlaceEvent) {
+			for (Short id : getConfig().getShortList("breaking.blacklistedblocks")) {
+				if(!(player.hasPermission(permission + Material.getMaterial(id)))) {
+					if (((BlockBreakEvent) event).getBlock().getType() == Material.getMaterial(id)) {
+						((BlockBreakEvent) event).setCancelled(cancelled);
+					}
+				}
+			}	
 		} else if (event instanceof BlockBreakEvent) {
-			((BlockPlaceEvent) event).setCancelled(cancelled);
-		} else if (!(event instanceof BlockPlaceEvent) || !(event instanceof BlockBreakEvent)) {
-			Plugin p = Bukkit.getPluginManager().getPlugin("BlockHandler");
+			for (Short id : getConfig().getShortList("placing.blacklistedblocks")) {
+				if(!(player.hasPermission(permission))) {
+					if (((BlockPlaceEvent) event).getBlock().getType() == Material.getMaterial(id)) {
+						((BlockPlaceEvent) event).setCancelled(cancelled);
+					}
+				}
+			}	
+		} else {	
+			Plugin p = Bukkit.getPluginManager().getPlugin("BlockHandler");	
 			Bukkit.getPluginManager().disablePlugin(p);
 		}
 	}
