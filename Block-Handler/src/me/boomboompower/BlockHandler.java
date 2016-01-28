@@ -16,10 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 @SuppressWarnings("deprecation")
 public class BlockHandler extends JavaPlugin implements Listener {
 	
-	/**
-	 *  
-	 */
-	
 	@Override  
 	public void onEnable() {
 		Bukkit.getPluginManager().registerEvents(this, this);
