@@ -25,3 +25,4 @@ placing:
 # In the blacklisted-blocks section.
 other:
   disablebuckets: false
+  denymessage: "&c&lHEY! &7You cannot place this block!"
