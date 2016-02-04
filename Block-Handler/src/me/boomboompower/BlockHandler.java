@@ -37,10 +37,8 @@ public class BlockHandler extends JavaPlugin implements Listener {
 	@EventHandler
 	public void bucketFillEvent(PlayerBucketFillEvent e) {
 		if (getConfig().getBoolean("other.disablebuckets")) {
-			e.setCancelled(true);
-			for (String message : getConfig().getStringList("other.denymessage.message")) {
-				e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-			}
+			e.setCancelled(true);	
+			e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("other.denymessage.message")));
 		}
 	}
 	
@@ -48,9 +46,7 @@ public class BlockHandler extends JavaPlugin implements Listener {
 	public void bucketEmptyEvent(PlayerBucketEmptyEvent e) {
 		if (getConfig().getBoolean("other.disablebuckets")) {
 			e.setCancelled(true);
-			for (String message : getConfig().getStringList("other.denymessage.message")) {
-				e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-			}
+			e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("other.denymessage.message")));
 		}
 	}
 	   
