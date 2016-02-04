@@ -3,6 +3,7 @@ package me.boomboompower;
 import java.io.File;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -15,8 +16,6 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.md_5.bungee.api.ChatColor;
-
 @SuppressWarnings("deprecation")
 public class BlockHandler extends JavaPlugin implements Listener {
 	
@@ -25,7 +24,14 @@ public class BlockHandler extends JavaPlugin implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, this);
 	    saveREADME();
 	    saveDefaultConfig();
-	    chatHandler();  
+	    chatHandler();
+	    if (getConfig().getInt("config-version") < getConfig().getDefaults().getInt("config-version")) {
+			broadcast("&a[BlockHandler] &2- - - - - - - - - - - - - - - - - - - - -");
+			broadcast("&a[BlockHandler] ");
+			broadcast("&a[BlockHandler] &cYour Configuration File Is Outdated!");
+			broadcast("&a[BlockHandler] ");
+			broadcast("&a[BlockHandler] &2- - - - - - - - - - - - - - - - - - - - -");
+		}
 	}
 	
 	@EventHandler
