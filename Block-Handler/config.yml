@@ -12,14 +12,16 @@ breaking:
 # This uses item ID's to check which block, get them here
 # http://minecraft.gamepedia.com/Data_values/Block_IDs
 placing:
+  denymessage:
+    enabled: true
+    message: "&c&lHEY! &7You cannot place this block!"
   blacklistedblocks:
     - 1
     - 2
     - 3
     - 4
-
-# Changing this does
-# Nothing at all :P
-chathandler:
-  enabled: false
-  sentmessage: false
+  
+# Used for items that cannot be used 
+# In the blacklisted-blocks section.
+other:
+  disablebuckets: false

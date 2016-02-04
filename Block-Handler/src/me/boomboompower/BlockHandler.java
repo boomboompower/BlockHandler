@@ -10,8 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import net.md_5.bungee.api.ChatColor;
 
 @SuppressWarnings("deprecation")
 public class BlockHandler extends JavaPlugin implements Listener {
@@ -22,6 +26,20 @@ public class BlockHandler extends JavaPlugin implements Listener {
 	    saveREADME();
 	    saveDefaultConfig();
 	    chatHandler();  
+	}
+	
+	@EventHandler
+	public void bucketFillEvent(PlayerBucketFillEvent e) {
+		if (getConfig().getBoolean("other.disablebuckets")) {
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void bucketEmptyEvent(PlayerBucketEmptyEvent e) {
+		if (getConfig().getBoolean("other.disablebuckets")) {
+			e.setCancelled(true);
+		}
 	}
 	   
 	@EventHandler  
@@ -35,29 +53,25 @@ public class BlockHandler extends JavaPlugin implements Listener {
 	      Player p = e.getPlayer();
 	      blockTest(p, "place.", e, true); 
 	}
-	  
-	public void saveREADME() {
-		File customConfigFile = null;
-		if (customConfigFile == null) customConfigFile = new File(getDataFolder(), "README.yml");   
-		if (!customConfigFile.exists()) this.saveResource("README.yml", false); 
-	}
 	   
 	public void chatHandler() {
 		if(Bukkit.getPluginManager().isPluginEnabled("ChatHandler")) {
-			getLogger().info("ChatHandler what are we going to do today?");
-			Bukkit.getConsoleSender().sendMessage("[ChatHandler] We are going to take over the world!");
-			getConfig().set("ChatHandler.enabled", true);
-		} else {
-			getConfig().set("ChatHandler.enabled", false); 
-		}  
+			broadcast("&b[BlockHandler] &3ChatHandler what are we going to do today?");
+			broadcast("&b[ChatHandler] &3We are going to take over the world!");
+		}
 	}
 	   
 	public void blockTest(Player player, String permission, Event event, Boolean cancelled) {
+		if (player == null) return;
+		if (event == null) return;
 		if (event instanceof BlockBreakEvent) {
 			for (Short id : getConfig().getShortList("placing.blacklistedblocks")) {
-				if(!(player.hasPermission(permission))) {
-					if (((BlockBreakEvent) event).getBlock().getType() == Material.getMaterial(id)) {
-						((BlockBreakEvent) event).setCancelled(cancelled);
+				for (String message : getConfig().getStringList("placing.denymessage.message")) {
+					if(!(player.hasPermission(permission))) {
+						if (((BlockBreakEvent) event).getBlock().getType() == Material.getMaterial(id)) {
+							((BlockBreakEvent) event).setCancelled(cancelled);	
+							if(getConfig().getBoolean("placing.denymessage.enabled")) player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+						}
 					}
 				}
 			}	
@@ -73,5 +87,15 @@ public class BlockHandler extends JavaPlugin implements Listener {
 			Plugin p = Bukkit.getPluginManager().getPlugin("BlockHandler");	
 			Bukkit.getPluginManager().disablePlugin(p);
 		}
+	}
+	
+	public void saveREADME() {
+		File customConfigFile = null;
+		if (customConfigFile == null) customConfigFile = new File(getDataFolder(), "README.yml");   
+		if (!customConfigFile.exists()) this.saveResource("README.yml", false); 
+	}
+	
+	private static void broadcast(String message) {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
 	}
 }
