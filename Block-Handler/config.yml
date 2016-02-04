@@ -25,4 +25,6 @@ placing:
 # In the blacklisted-blocks section.
 other:
   disablebuckets: false
-  denymessage: "&c&lHEY! &7You cannot place this block!"
+  denymessage: 
+    - "&c&lHEY! &7You cannot place this block!"
+    - "&7Using &3Water Buckets&7 is NOT ALLOWED!"
